@@ -1,6 +1,7 @@
 package com.eventstore.dbclient;
 
 import org.reactivestreams.Publisher;
+import org.reactivestreams.Subscriber;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -8,6 +9,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 public class EventStoreDBClient extends EventStoreDBClientBase {
     private EventStoreDBClient(EventStoreDBClientSettings settings) {
@@ -78,7 +80,7 @@ public class EventStoreDBClient extends EventStoreDBClientBase {
         return this.readStreamReactive(streamName, Long.MAX_VALUE, options);
     }
 
-    public Publisher<ResolvedEvent> readStreamReactive(String streamName, long maxCount, ReadStreamOptions options) {
+    public Publisher<ResolvedEventWithContext> readStreamReactiveWithContext(String streamName, long maxCount, ReadStreamOptions options) {
         if (options == null)
             options = ReadStreamOptions.get();
 
@@ -86,6 +88,38 @@ public class EventStoreDBClient extends EventStoreDBClientBase {
             options.authenticated(this.credentials);
 
         return new ReadStream(this.client, streamName, maxCount, options);
+    }
+
+    public Publisher<ResolvedEvent> readStreamReactive(String streamName, long maxCount, ReadStreamOptions options) {
+        final Publisher<ResolvedEventWithContext> parent = readStreamReactiveWithContext(streamName, maxCount, options);
+
+        return publisherMap(parent, ResolvedEventWithContext::getEvent);
+    }
+
+    private static <A, B> Publisher<B> publisherMap(final Publisher<A> parent, Function<A, B> fun) {
+        return sub -> {
+            parent.subscribe(new Subscriber<A>() {
+                @Override
+                public void onSubscribe(org.reactivestreams.Subscription s) {
+                    sub.onSubscribe(s);
+                }
+
+                @Override
+                public void onNext(A a) {
+                    sub.onNext(fun.apply(a));
+                }
+
+                @Override
+                public void onError(Throwable t) {
+                    sub.onError(t);
+                }
+
+                @Override
+                public void onComplete() {
+                    sub.onComplete();
+                }
+            });
+        };
     }
 
     public CompletableFuture<StreamMetadata> getStreamMetadata(String streamName) {
@@ -144,7 +178,7 @@ public class EventStoreDBClient extends EventStoreDBClientBase {
         return this.readAllReactive(Long.MAX_VALUE, options);
     }
 
-    public Publisher<ResolvedEvent> readAllReactive(long maxCount, ReadAllOptions options) {
+    public Publisher<ResolvedEventWithContext> readAllReactiveWithContext(long maxCount, ReadAllOptions options) {
         if (options == null)
             options = ReadAllOptions.get();
 
@@ -152,6 +186,12 @@ public class EventStoreDBClient extends EventStoreDBClientBase {
             options.authenticated(this.credentials);
 
         return new ReadAll(this.client, maxCount, options);
+    }
+
+    public Publisher<ResolvedEvent> readAllReactive(long maxCount, ReadAllOptions options) {
+        Publisher<ResolvedEventWithContext> parent = new ReadAll(this.client, maxCount, options);
+
+        return publisherMap(parent, ResolvedEventWithContext::getEvent);
     }
 
     public CompletableFuture<Subscription> subscribeToStream(String streamName, SubscriptionListener listener) {
