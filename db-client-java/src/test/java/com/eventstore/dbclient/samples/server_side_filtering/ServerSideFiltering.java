@@ -9,7 +9,7 @@ public class ServerSideFiltering {
         //region exclude-system
         SubscriptionListener listener = new SubscriptionListener() {
             @Override
-            public void onEvent(Subscription subscription, ResolvedEvent event) {
+            public void onEvent(Subscription subscription, SubscriptionContext context, ResolvedEvent event) {
                 System.out.println("Received event"
                         + event.getOriginalEvent().getStreamRevision().getValueUnsigned()
                         + "@" + event.getOriginalEvent().getStreamId());
@@ -40,7 +40,7 @@ public class ServerSideFiltering {
 
         SubscriptionListener listener = new SubscriptionListener() {
             @Override
-            public void onEvent(Subscription subscription, ResolvedEvent event) {
+            public void onEvent(Subscription subscription, SubscriptionContext context, ResolvedEvent event) {
                 System.out.println("Received event"
                         + event.getOriginalEvent().getStreamRevision().getValueUnsigned()
                         + "@" + event.getOriginalEvent().getStreamId());
@@ -65,7 +65,7 @@ public class ServerSideFiltering {
 
         SubscriptionListener listener = new SubscriptionListener() {
             @Override
-            public void onEvent(Subscription subscription, ResolvedEvent event) {
+            public void onEvent(Subscription subscription, SubscriptionContext context, ResolvedEvent event) {
                 System.out.println("Received event"
                         + event.getOriginalEvent().getStreamRevision().getValueUnsigned()
                         + "@" + event.getOriginalEvent().getStreamId());
@@ -90,7 +90,7 @@ public class ServerSideFiltering {
 
         SubscriptionListener listener = new SubscriptionListener() {
             @Override
-            public void onEvent(Subscription subscription, ResolvedEvent event) {
+            public void onEvent(Subscription subscription, SubscriptionContext context, ResolvedEvent event) {
                 System.out.println("Received event"
                         + event.getOriginalEvent().getStreamRevision().getValueUnsigned()
                         + "@" + event.getOriginalEvent().getStreamId());
@@ -115,7 +115,7 @@ public class ServerSideFiltering {
 
         SubscriptionListener listener = new SubscriptionListener() {
             @Override
-            public void onEvent(Subscription subscription, ResolvedEvent event) {
+            public void onEvent(Subscription subscription, SubscriptionContext context, ResolvedEvent event) {
                 System.out.println("Received event"
                         + event.getOriginalEvent().getStreamRevision().getValueUnsigned()
                         + "@" + event.getOriginalEvent().getStreamId());
@@ -153,7 +153,7 @@ public class ServerSideFiltering {
 
         SubscriptionListener listener = new SubscriptionListener() {
             @Override
-            public void onEvent(Subscription subscription, ResolvedEvent event) {
+            public void onEvent(Subscription subscription, SubscriptionContext context, ResolvedEvent event) {
                 System.out.println("Received event"
                         + event.getOriginalEvent().getStreamRevision().getValueUnsigned()
                         + "@" + event.getOriginalEvent().getStreamId());
@@ -189,7 +189,7 @@ public class ServerSideFiltering {
 
         SubscriptionListener listener = new SubscriptionListener() {
             @Override
-            public void onEvent(Subscription subscription, ResolvedEvent event) {
+            public void onEvent(Subscription subscription, SubscriptionContext context, ResolvedEvent event) {
                 System.out.println("Received event"
                         + event.getOriginalEvent().getStreamRevision().getValueUnsigned()
                         + "@" + event.getOriginalEvent().getStreamId());

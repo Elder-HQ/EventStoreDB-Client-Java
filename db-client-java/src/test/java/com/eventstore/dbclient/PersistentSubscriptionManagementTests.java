@@ -181,7 +181,7 @@ public class PersistentSubscriptionManagementTests extends ESDBTests {
         client.subscribeToStream(streamName, groupName, new PersistentSubscriptionListener() {
             int count = 0;
             @Override
-            public void onEvent(PersistentSubscription subscription, ResolvedEvent event) {
+            public void onEvent(PersistentSubscription subscription, int retryCount, Position position, ResolvedEvent event) {
                 if (count < 2)
                     subscription.nack(NackAction.Park, "because reason", event);
                 else
@@ -261,7 +261,7 @@ public class PersistentSubscriptionManagementTests extends ESDBTests {
         client.subscribeToAll(groupName, new PersistentSubscriptionListener() {
             int count = 0;
             @Override
-            public void onEvent(PersistentSubscription subscription, ResolvedEvent event) {
+            public void onEvent(PersistentSubscription subscription, int retryCount, Position position, ResolvedEvent event) {
                 if (count < 2 && event.getOriginalEvent().getStreamId().equals(streamName))
                     subscription.nack(NackAction.Park, "because reason", event);
                 else

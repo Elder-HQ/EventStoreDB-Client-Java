@@ -9,7 +9,7 @@ public class SubscribingToStream {
         // region subscribe-to-stream
         SubscriptionListener listener = new SubscriptionListener() {
             @Override
-            public void onEvent(Subscription subscription, ResolvedEvent event) {
+            public void onEvent(Subscription subscription, SubscriptionContext context, ResolvedEvent event) {
                 System.out.println("Received event"
                         + event.getOriginalEvent().getStreamRevision()
                         + "@" + event.getOriginalEvent().getStreamId());
@@ -54,7 +54,7 @@ public class SubscribingToStream {
                 "some-stream",
                 new SubscriptionListener() {
                     @Override
-                    public void onEvent(Subscription subscription, ResolvedEvent event) {
+                    public void onEvent(Subscription subscription, SubscriptionContext context, ResolvedEvent event) {
                         HandleEvent(event);
                         checkpoint[0] = event.getOriginalEvent().getStreamRevision();
                     }
@@ -75,7 +75,7 @@ public class SubscribingToStream {
         // region subscribe-to-all
         SubscriptionListener listener = new SubscriptionListener() {
             @Override
-            public void onEvent(Subscription subscription, ResolvedEvent event) {
+            public void onEvent(Subscription subscription, SubscriptionContext context, ResolvedEvent event) {
                 System.out.println("Received event"
                         + event.getOriginalEvent().getStreamRevision().getValueUnsigned()
                         + "@" + event.getOriginalEvent().getStreamId());
@@ -107,7 +107,7 @@ public class SubscribingToStream {
         client.subscribeToAll(
                 new SubscriptionListener() {
                     @Override
-                    public void onEvent(Subscription subscription, ResolvedEvent event) {
+                    public void onEvent(Subscription subscription, SubscriptionContext context, ResolvedEvent event) {
                         HandleEvent(event);
                         checkpoint[0] = event.getOriginalEvent().getPosition();
                     }
@@ -127,7 +127,7 @@ public class SubscribingToStream {
     private static void subscribeToFiltered(EventStoreDBClient client) {
         SubscriptionListener listener = new SubscriptionListener() {
             @Override
-            public void onEvent(Subscription subscription, ResolvedEvent event) {
+            public void onEvent(Subscription subscription, SubscriptionContext context, ResolvedEvent event) {
                 System.out.println("Received event"
                         + event.getOriginalEvent().getStreamRevision().getValueUnsigned()
                         + "@" + event.getOriginalEvent().getStreamId());
@@ -157,7 +157,7 @@ public class SubscribingToStream {
     private static void overridingUserCredentials(EventStoreDBClient client) {
         SubscriptionListener listener = new SubscriptionListener() {
             @Override
-            public void onEvent(Subscription subscription, ResolvedEvent event) {
+            public void onEvent(Subscription subscription, SubscriptionContext context, ResolvedEvent event) {
                 System.out.println("Received event"
                         + event.getOriginalEvent().getStreamRevision().getValueUnsigned()
                         + "@" + event.getOriginalEvent().getStreamId());

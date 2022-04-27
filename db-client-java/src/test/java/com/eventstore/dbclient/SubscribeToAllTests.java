@@ -18,7 +18,7 @@ public class SubscribeToAllTests extends ESDBTests {
 
         SubscriptionListener listener = new SubscriptionListener() {
             @Override
-            public void onEvent(Subscription subscription, ResolvedEvent event) {
+            public void onEvent(Subscription subscription, SubscriptionContext context, ResolvedEvent event) {
                 receivedEvents.countDown();
             }
 
@@ -60,7 +60,7 @@ public class SubscribeToAllTests extends ESDBTests {
             int current = 0;
 
             @Override
-            public void onEvent(Subscription subscription, ResolvedEvent event) {
+            public void onEvent(Subscription subscription, SubscriptionContext context, ResolvedEvent event) {
                 RecordedEvent record = event.getEvent();
 
                 assertEquals(new StreamRevision(expectedStreamVersions[current]), record.getStreamRevision());

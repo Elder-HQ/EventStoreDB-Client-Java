@@ -64,6 +64,7 @@ abstract class AbstractRegularSubscription {
                         this._subscription = new Subscription(this._requestStream,
                                 readResp.getConfirmation().getSubscriptionId(), checkpointer);
                         future.complete(this._subscription);
+                        listener.onConfirmation(this._subscription);
                         return;
                     }
 
@@ -91,7 +92,17 @@ abstract class AbstractRegularSubscription {
                         return;
                     }
 
-                    listener.onEvent(this._subscription, ResolvedEvent.fromWire(readResp.getEvent()));
+                    long firstStreamPosition = readResp.getFirstStreamPosition();
+                    long lastStreamPosition = readResp.getLastStreamPosition();
+                    Position lastStreamAllPosition = null;
+
+                    if (readResp.hasLastAllStreamPosition()) {
+                        lastStreamAllPosition = new Position(readResp.getLastAllStreamPosition().getCommitPosition(), readResp.getLastAllStreamPosition().getPreparePosition());
+                    }
+
+                    SubscriptionContext context = new SubscriptionContext(firstStreamPosition, lastStreamPosition, lastStreamAllPosition);
+
+                    listener.onEvent(this._subscription, context, ResolvedEvent.fromWire(readResp.getEvent()));
                 }
 
                 @Override
